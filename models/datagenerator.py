@@ -26,8 +26,8 @@ class DataGenerator:
             last_name = urlFile.read().split('\n')
         total = len(first_name) * len(last_name)
         sam = random.sample(range(total), 100)
-        names = [f'{first_name[s // len(last_name)]} {last_name[s % len(last_name)]}' for s in sam]
-        print(names)
+        person_names = [f'{first_name[s // len(last_name)]} {last_name[s % len(last_name)]}' for s in sam]
+        return person_names
         
     def _generate_address(self):
         public_places = []
@@ -46,14 +46,16 @@ class DataGenerator:
         return addresses
         
     def _get_random_townhouse_name(sefl):
-        townhouse_name = []
+        townhouse_names = []
         with open("./models/townhouse_name.txt", "r") as townhouse:
-            townhouse_name = townhouse.read().split('\n')
-            print(townhouse_name)
-        total = len(townhouse_name)
+            townhouse_names = townhouse.read().split('\n')
+        total = len(townhouse_names)
         sam = random.sample(range(total), 100)
-        print(sam)
-        townhouses = [f'{townhouse_name[s]}' for s in sam]
-        print(townhouses)
+        townhouses = [f'{townhouse_names[s]}' for s in sam]
+        return townhouses
+        
+    def _get_ramdom_property_type(self):
+        property_types = [] 
+        
         
     
