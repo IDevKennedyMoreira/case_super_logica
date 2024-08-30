@@ -1,0 +1,15 @@
+.d8888. db    db d8888b. d88888b d8888b. db       .d88b.   d888b  d888888b  .o88b.  .d8b.  
+88'  YP 88    88 88  `8D 88'     88  `8D 88      .8P  Y8. 88' Y8b   `88'   d8P  Y8 d8' `8b 
+`8bo.   88    88 88oodD' 88ooooo 88oobY' 88      88    88 88         88    8P      88ooo88 
+  `Y8b. 88    88 88~~~   88~~~~~ 88`8b   88      88    88 88  ooo    88    8b      88~~~88 
+db   8D 88b  d88 88      88.     88 `88. 88booo. `8b  d8' 88. ~8~   .88.   Y8b  d8 88   88 
+`8888Y' ~Y8888P' 88      Y88888P 88   YD Y88888P  `Y88P'   Y888P  Y888888P  `Y88P' YP   YP 
+
+------------------------------------------------------------------------------------------                                                                                          
+                                                                                                  
+1. Esta camada tem por finalide receber os dados brutos para posterior
+processamento no Datalake;
+2. Devido ao tempo de execução de projeto vamos focar apenas no recebimento
+de arquivos CSV;
+3. Os arquivos em questão são gerados com uma abstração chamada datagenerator
+presente nesse mesmo repositorio dentro da pasta models.
