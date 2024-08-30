@@ -10,4 +10,4 @@ Case para a entrevista de emprego engenheiro de dados senior superlógica.
 
         2. Executar Airflow
 
-            `code` airflow standalone
+          `airflow standalone`
