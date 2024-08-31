@@ -1,20 +1,20 @@
 import csv
 import random
 import uuid
-from datetime import date, datetime
+from datetime import datetime
 
 class DataGenerator:
 
     def __init__(self):
-        self._townhouse_id_list = [0,1,2]
-        self._sufix = datetime.today().strftime('%d/%m/%Y').replace('/','')
-                
+        self._sufix = datetime.now().strftime('%m%d%Y%H%M%S')
+        print(self._sufix)
+        
     def _generate_person_name(self, number_records):
         first_names = []
         last_names = []
-        with open("./models/person_first_name.txt", "r") as urlFile:
+        with open("../rawmaterial/person_first_name.txt", "r") as urlFile:
             first_names = urlFile.read().split('\n')
-        with open("./models/person_last_name.txt", "r") as urlFile:
+        with open("../rawmaterial/person_last_name.txt", "r") as urlFile:
             last_names = urlFile.read().split('\n')
         total = len(first_names) * len(last_names)
         sam = random.sample(range(total), number_records)
@@ -25,11 +25,11 @@ class DataGenerator:
         public_places = []
         first_names = []
         last_names = []
-        with open("./models/public_place.txt", "r") as places:
+        with open("rawmaterial/public_place.txt", "r") as places:
             public_places = places.read().split('\n')
-        with open("./models/person_first_name.txt", "r") as firstname:
+        with open("rawmaterial/person_first_name.txt", "r") as firstname:
             first_names = firstname.read().split('\n')
-        with open("./models/person_last_name.txt", "r") as lastname:
+        with open("rawmaterial/person_last_name.txt", "r") as lastname:
             last_names = lastname.read().split('\n')
         total = len(first_names) * len(public_places)
         sam = random.sample(range(total), number_records)
@@ -38,7 +38,7 @@ class DataGenerator:
         
     def _get_random_townhouse_names(self, number_records):
         townhouse_names = []
-        with open("./models/townhouse_name.txt", "r") as townhouse:
+        with open("rawmaterial/townhouse_name.txt", "r") as townhouse:
             townhouse_names = townhouse.read().split('\n')
         total = len(townhouse_names)
         sam = random.sample(range(total), number_records)
@@ -47,11 +47,12 @@ class DataGenerator:
         
     def _get_ramdom_property_type(self, number_records):
         property_types = [] 
-        with open("./models/property_type.txt", "r") as property:
+        with open("rawmaterial/property_type.txt", "r") as property:
             property_types = property.read().split('\n')
         total = len(property_types)
         sam = random.sample(range(total), number_records)
         property_types = [f'{property_types[s]}' for s in sam]
+        return property_types
         
         
     """
@@ -81,30 +82,21 @@ class DataGenerator:
         .Valor do imóvel
     """
     def create_property_file(self):
-        print(self.townhouse_id_list)
         property_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
         property_type_list = self._get_ramdom_property_type(3)
-        property_value_list = [f"R$ {str(random.randrange(200000, 800000))}" for i in range(3)]
-        with open(f"imoveis.csv", "w") as file:
+        townhouse_id_list = []
+        townhouse_id_list = self.townhouse_id_list[:]
+        property_value_list = [f'R${str(random.randrange(200000, 800000))},00' for i in range(3)]
+        with open(f"./datalake/landing/imoveis{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("imovel_id", "tipo", "condominio_id", "valor"))
             i = 0
             while i < 3:
-                writer.writerow
-                (
-                    (
-                        property_id_list[i], 
-                        property_type_list[i],
-                        self._townhouse_id_list[i], 
-                        property_value_list[i]
-                    )
-                )
+                writer.writerow((property_id_list[i], property_type_list[i],townhouse_id_list[i], property_value_list[i]) )
                 i += 1
         return
         
         
-        pass
-    
     def create_transaction_file(self):
         pass
     
@@ -118,7 +110,7 @@ class DataGenerator:
         townhouse_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
         townhouse_names_list = self._get_random_townhouse_names(3)
         townhouse_address_list = self._generate_address(3)
-        with open(f"../storage/condominios.csv", "w") as file:
+        with open(f"./datalake/landing/condominios{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("condominio_id", "condominio_nome","condominio_endereco"))
             i = 0
@@ -134,3 +126,4 @@ class DataGenerator:
     """ 
     def create_files(self):
         self.create_townhouse_file()
+        self.create_property_file()
