@@ -1,4 +1,4 @@
-from models.datagenerator import DataGenerator
+from models import DataGenerator
 from pathlib import Path
 
 """
