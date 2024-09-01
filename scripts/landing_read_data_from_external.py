@@ -13,8 +13,8 @@ from pathlib import Path
 """
 def start_up():
     
-    global dg
-    dg = DataGenerator()
+    global dg_condominios
+    dg_condominios = DataGenerator("./datalake/landing/dim_condominios")
     
 
 """
@@ -22,7 +22,7 @@ def start_up():
 """
 def work():
     
-    dg.create_files() #Criando arquivos
+    dg_condominios.create_files()
     
     
 """

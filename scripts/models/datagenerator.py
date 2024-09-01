@@ -5,10 +5,16 @@ from datetime import datetime
 
 class DataGenerator:
 
-    def __init__(self):
+    """
+    Método construtor para a criação de dados para testes
+    """
+    def __init__(self, file_folder_destination):
         self._sufix = datetime.now().strftime('%m%d%Y%H%M%S')
-        print(self._sufix)
+        self._file_folder_destination = file_folder_destination
         
+    """
+    Gera nomes de pessoas aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    """    
     def _generate_person_name(self, number_records):
         first_names = []
         last_names = []
@@ -20,7 +26,10 @@ class DataGenerator:
         sam = random.sample(range(total), number_records)
         persons_names = [f'{first_names[s // len(last_names)]} {last_names[s % len(last_names)]}' for s in sam]
         return persons_names
-        
+    
+    """
+    Gera endereços aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    """    
     def _generate_address(self, number_records):
         public_places = []
         first_names = []
@@ -35,7 +44,10 @@ class DataGenerator:
         sam = random.sample(range(total), number_records)
         addresses = [f'{public_places[s // len(public_places)]} {first_names[s // len(last_names)]} {last_names[s % len(last_names)]} N. {random.randint(0,1000)}' for s in sam]
         return addresses
-        
+    
+    """
+    Gera nomes de condominios aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    """  
     def _get_random_townhouse_names(self, number_records):
         townhouse_names = []
         with open("rawmaterial/townhouse_name.txt", "r") as townhouse:
@@ -44,7 +56,10 @@ class DataGenerator:
         sam = random.sample(range(total), number_records)
         townhouses = [f'{townhouse_names[s]}' for s in sam]
         return townhouses
-        
+    
+    """
+    Gera tipos de propriedade aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    """ 
     def _get_ramdom_property_type(self, number_records):
         property_types = [] 
         with open("rawmaterial/property_type.txt", "r") as property:
@@ -75,6 +90,7 @@ class DataGenerator:
         return
         
     """
+    Criar arquivos de propriedades na pasta de destino selecionada na construção do objeto
     Um  arquivo de imovel deve conter:
         .Id da propriedade
         .Tipo do imóvel
@@ -110,7 +126,7 @@ class DataGenerator:
         townhouse_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
         townhouse_names_list = self._get_random_townhouse_names(3)
         townhouse_address_list = self._generate_address(3)
-        with open(f"./datalake/landing/condominios{self._sufix}.csv", "w") as file:
+        with open(f"{self._file_folder_destination}/condominios{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("condominio_id", "condominio_nome","condominio_endereco"))
             i = 0
@@ -126,4 +142,3 @@ class DataGenerator:
     """ 
     def create_files(self):
         self.create_townhouse_file()
-        self.create_property_file()
