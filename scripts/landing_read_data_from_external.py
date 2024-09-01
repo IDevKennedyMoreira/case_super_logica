@@ -13,18 +13,23 @@ from pathlib import Path
 """
 def start_up():
     
-    global dg_condominios
-    dg_condominios = DataGenerator("./datalake/landing/dim_condominios")
-    
+    global dg
+    dg = DataGenerator("./datalake/landing/dim_condominios")
+
+        
 
 """
     Executa criação de arquivos e faz a simulação de ingestão para a camada de landing do datalake
 """
 def work():
     
-    dg_condominios.create_files()
+    dg.create_townhouse_file()
     
+    dg.create_property_file()
     
+    dg.create_resident_file()
+    
+      
 """
     Orquestração do script de ingestão
 """

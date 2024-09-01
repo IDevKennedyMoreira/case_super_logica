@@ -18,9 +18,9 @@ class DataGenerator:
     def _generate_person_name(self, number_records):
         first_names = []
         last_names = []
-        with open("../rawmaterial/person_first_name.txt", "r") as urlFile:
+        with open("rawmaterial/person_first_name.txt", "r") as urlFile:
             first_names = urlFile.read().split('\n')
-        with open("../rawmaterial/person_last_name.txt", "r") as urlFile:
+        with open("rawmaterial/person_last_name.txt", "r") as urlFile:
             last_names = urlFile.read().split('\n')
         total = len(first_names) * len(last_names)
         sam = random.sample(range(total), number_records)
@@ -79,13 +79,13 @@ class DataGenerator:
     def create_resident_file(self):
         person_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
         person_names_list = self._generate_person_name(3)
-        townhouse_names_list = self._get_random_townhouse_names(3)
-        with open(f"moradores.csv", "w") as file:
+        townhouse_id_list = self.townhouse_id_list[:]
+        with open(f"./datalake/landing/dim_moradores/moradores{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("morador_id", "morador_nome","condominio_id"))
             i = 0
             while i < 3:
-                writer.writerow((person_id_list[i], person_names_list[i],townhouse_names_list[i]))
+                writer.writerow((person_id_list[i], person_names_list[i],townhouse_id_list[i]))
                 i += 1
         return
         
@@ -103,7 +103,7 @@ class DataGenerator:
         townhouse_id_list = []
         townhouse_id_list = self.townhouse_id_list[:]
         property_value_list = [f'R${str(random.randrange(200000, 800000))},00' for i in range(3)]
-        with open(f"./datalake/landing/imoveis{self._sufix}.csv", "w") as file:
+        with open(f"./datalake/landing/dim_imoveis/imoveis{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("imovel_id", "tipo", "condominio_id", "valor"))
             i = 0
@@ -136,9 +136,3 @@ class DataGenerator:
         #Persistindo dados em objeto na memoria para gerar vinculo entre os arquivos
         self.townhouse_id_list = townhouse_id_list
         return
-    
-    """
-    Método para orquestração de criação de arquivos
-    """ 
-    def create_files(self):
-        self.create_townhouse_file()
