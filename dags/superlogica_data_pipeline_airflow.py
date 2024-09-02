@@ -19,6 +19,9 @@ with DAG(
         
     def run_raw_read_data_from_landing_imoveis():
         raw_read_data_from_landing("../datalake/landing/dim_propriedades")
+    
+    def run_raw_read_data_from_landing_transacoes():
+        raw_read_data_from_landing("../datalake/landing/dim_transacoes")
 
     task_landing_read_data_from_external = PythonOperator(
         task_id = 'landing_read_data_from_external',
@@ -40,7 +43,13 @@ with DAG(
         python_callable = run_raw_read_data_from_landing_imoveis
     )
     
+    task_raw_read_data_from_landing_transacoes = PythonOperator(
+        task_id = 'raw_read_data_from_landing_transacoes',
+        python_callable = run_raw_read_data_from_landing_transacoes
+    )
+    
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_condominios
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_moradores
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_imoveis
+    task_landing_read_data_from_external>>task_raw_read_data_from_landing_transacoes
     
