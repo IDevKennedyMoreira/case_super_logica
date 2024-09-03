@@ -57,7 +57,6 @@ with DAG(
     """
     Orquestração das tasks acima definidas
     """
-    
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_condominios
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_moradores
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_imoveis
