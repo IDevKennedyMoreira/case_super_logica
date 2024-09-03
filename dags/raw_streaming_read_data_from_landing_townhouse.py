@@ -12,7 +12,9 @@ em streaming usando micro baching ele não é uma resposta completa ao desafio, 
 anteriormente é um ponto de partida. Para aumento de escabilidade vertical pode ser definido
 um maior número de works a partir do método config de Spark Session e também um mais memória
 RAM para processamento, já numa estratégia de escala horizontal é possível exdcutar esse mesmo script
-em modo serverless respondendo a questão do enunciado
+em modo serverless em diversos clusters porém é necessário analisar questões de duplicicade e concorrência
+de recursos (recomendo o uso de um serviço de mensageria como kafka para escala horizontal do mesmo script) 
+respondendo a questão do enunciado.
 """
 
 def start_up():

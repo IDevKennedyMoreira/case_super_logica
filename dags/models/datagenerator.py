@@ -3,6 +3,11 @@ import random
 import uuid
 from datetime import datetime
 
+"""
+                                🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
+Documentação:
+Classe responsável pela criação de dados aleatórios para posterior processamento no dalake
+"""
 class DataGenerator:
 
     """
@@ -75,17 +80,19 @@ class DataGenerator:
         . Id de identificação do morador
         . Nome de morador
         . Condominio onde mora
+        . Data de cadastro do morador
     """    
     def create_resident_file(self):
         person_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
         person_names_list = self._generate_person_name(3)
         townhouse_id_list = self.townhouse_id_list[:]
+        registration_date = [ datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y %I:%M %p') for i in range(3)]
         with open(f"../datalake/landing/dim_moradores/moradores{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
-            writer.writerow(("morador_id", "morador_nome","condominio_id"))
+            writer.writerow(("morador_id", "morador_nome","condominio_id","data_registro"))
             i = 0
             while i < 3:
-                writer.writerow((person_id_list[i], person_names_list[i],townhouse_id_list[i]))
+                writer.writerow((person_id_list[i], person_names_list[i],townhouse_id_list[i],registration_date[i]))
                 i += 1
         #Persistindo dados em objeto na memoria para gerar vinculo entre os arquivos
         self.person_id_list = person_id_list
@@ -116,18 +123,25 @@ class DataGenerator:
         self.property_id_list = property_id_list
         return
         
-        
+    """
+    Um arquivo de transaçao deve conter:
+        . Id da transação
+        . Valor da transação
+        . Id do imóvel
+        . Data da transação
+    """       
     def create_transaction_file(self):
         transaction_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
         transaction_value_list = [random.randrange(100, 5000) for i in range(3)]
         person_id_list = self.person_id_list[:]
         property_id_list = self.property_id_list[:]
+        transaction_date = [ datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y %I:%M %p') for i in range(3)]
         with open(f"../datalake/landing/fat_transacoes/transacoes{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
-            writer.writerow(("transacao_id", "transacao_valor", "morador_id", "imovel_id"))
+            writer.writerow(("transacao_id", "transacao_valor", "morador_id", "imovel_id","data_transacao"))
             i = 0
             while i < 3:
-                writer.writerow((transaction_id_list[i], transaction_value_list[i],person_id_list[i], property_id_list[i]) )
+                writer.writerow((transaction_id_list[i], transaction_value_list[i],person_id_list[i], property_id_list[i],transaction_date[i]) )
                 i += 1
         return
     

@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType
+from pyspark.sql.types import StructType, StringType, TimestampType, IntegerType
+
 
 """
                                 🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
@@ -20,27 +21,29 @@ def start_up():
 
 def defining_schemas():
 
-    schema_townhouse = StructType()                          \
-                       .add("condominio_id", "string")       \
-                       .add("condominio_nome", "string")     \
-                       .add("condominio_endereco", "string")
+    schema_townhouse = StructType()                              \
+                       .add("condominio_id", StringType())       \
+                       .add("condominio_nome", StringType())     \
+                       .add("condominio_endereco", StringType())
 
-    schema_property = StructType()                    \
-                      .add("imovel_id", "string")     \
-                      .add("tipo", "string")          \
-                      .add("condominio_id", "string") \
-                      .add("valor", "integer")
+    schema_property = StructType()                        \
+                      .add("imovel_id", StringType())     \
+                      .add("tipo", StringType())          \
+                      .add("condominio_id", StringType()) \
+                      .add("valor", IntegerType())
 
-    schema_residents = StructType()                   \
-                       .add("morador_id", "string")   \
-                       .add("morador_nome", "string") \
-                       .add("condominio_id", "string")
+    schema_residents = StructType()                       \
+                       .add("morador_id", StringType())   \
+                       .add("morador_nome", StringType()) \
+                       .add("condominio_id", StringType())\
+                       .add("data_registro",TimestampType())
 
-    schema_transactions = StructType()                       \
-                          .add("transacao_id", "string")     \
-                          .add("morador_id", "string")       \
-                          .add("transacao_valor", "integer") \
-                          .add("imovel_id", "string")
+    schema_transactions = StructType()                           \
+                          .add("transacao_id", StringType())     \
+                          .add("morador_id", StringType())       \
+                          .add("transacao_valor", IntegerType()) \
+                          .add("imovel_id", StringType())        \
+                          .add("data_transacao",TimestampType())
                           
     return schema_townhouse, schema_property, schema_residents, schema_transactions
 
@@ -58,12 +61,12 @@ def reading_dataframes(schema_townhouse, schema_property, schema_residents, sche
                    .parquet("../datalake/raw/dim_imoveis")
     
     df_transacoes =  spark.read.option("header","true")       \
-                   .schema(schema_transactions)                  \
+                   .schema(schema_transactions)               \
                    .option("recursiveFileLookup","true")      \
                    .parquet("../datalake/raw/fat_transacoes")
                    
     df_residents =  spark.read.option("header","true")        \
-                   .schema(schema_residents)               \
+                   .schema(schema_residents)                  \
                    .option("recursiveFileLookup","true")      \
                    .parquet("../datalake/raw/dim_moradores")
                    
@@ -85,6 +88,7 @@ def generate_obt(df_transacoes, df_property, df_residents, df_townhouse):
                      "t.morador_id",
                      "t.transacao_valor",
                      "t.imovel_id",
+                     "t.data_transacao",
                      "p.imovel_tipo",
                      "p.condominio_id",
                      "p.imovel_valor")
@@ -98,7 +102,11 @@ def generate_obt(df_transacoes, df_property, df_residents, df_townhouse):
                      "o.imovel_tipo",
                      "o.condominio_id",
                      "o.imovel_valor",
-                     "r.morador_nome")
+                     "o.data_transacao",
+                     "r.morador_nome",
+                     "r.data_registro")
+    
+    df_obt.show()
 
     df_obt.show()
 
@@ -113,7 +121,7 @@ def main():
     
     df_property = renaming_columns(df_property)
     
-    generate_obt(df_transacoes, df_property, df_residents)
+    generate_obt(df_transacoes, df_property, df_residents, df_townhouse)
     
 if __name__== "__main__":
     main()    

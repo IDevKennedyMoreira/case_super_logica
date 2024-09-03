@@ -18,7 +18,6 @@ def start_up():
     global dg
     dg = DataGenerator("./datalake/landing/dim_condominios")
      
-
 """
     Executa criação de arquivos e faz a simulação de ingestão para a camada de landing do datalake
 """
@@ -34,7 +33,7 @@ def work():
     
       
 """
-    Orquestração do script de ingestão
+    Orquestração do script de criação de simulação de entrada de dados 
 """
 def main():
     
