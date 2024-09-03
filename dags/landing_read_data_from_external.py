@@ -2,10 +2,12 @@ from models.datagenerator import DataGenerator
 from pathlib import Path
 
 """
-    Documentação:
-
-        Ao executar este script serão executadas rotinas que simularão a ingestão de arquivos .csv
-        para dentro da camada de landing do datalake
+                                🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
+Documentação:
+Ao executar este script serão executadas rotinas que simularão a ingestão de arquivos .csv
+toda essa simulação de dados é gerada pela classe DataGenerador presente no arquivo data
+generator na pastade models desse mesmo repositório. Desta forma serão criados arquivos
+dentro da camada de landing do datalake.
 """
 
 """

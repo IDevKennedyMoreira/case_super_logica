@@ -4,9 +4,10 @@ import os
 import re
 
 """
-    Documentação:
-
-        Ao executar este script ele lerá o ultimo csv gerado na camada landing e os converterá para formato parquet
+                                🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
+Documentação:
+Ao executar este script ele lerá o ultimo csv gerado na camada landing e os converterá para 
+o formato parquet e o salvará na camada raw do datalake 
 """
 
 """
@@ -15,7 +16,7 @@ import re
 def start_up(folder_origin, subfolder):
     
     global spark
-    spark = SparkSession.builder.appName("CSV to Parquet").getOrCreate()
+    spark = SparkSession.builder.appName("case_super_logica").getOrCreate()
     
     global subfolder_destiny
     subfolder_destiny = subfolder

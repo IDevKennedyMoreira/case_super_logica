@@ -4,7 +4,13 @@ from airflow.operators.python import PythonOperator
 from landing_read_data_from_external import main as landing_read_data_from_external
 from raw_read_data_from_landing import main as raw_read_data_from_landing
 
-
+"""
+                                🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
+Documentação:
+Essa é nossa DAG de execução eo nosso projeto porém como foi feita em computador local
+usando sqlite ela não conseguirá executar os scripts paralelamente gerando gargalos na pipeline
+porém deixarei essa DAG montada para finalidade de consulta do fluxo da pipeline.
+"""
 with DAG(
         "superlogica_data_pipeline",
         start_date=pendulum.datetime(2022, 8, 22, tz="UTC"),
@@ -47,6 +53,10 @@ with DAG(
         task_id = 'raw_read_data_from_landing_transacoes',
         python_callable = run_raw_read_data_from_landing_transacoes
     )
+    
+    """
+    Orquestração das tasks acima definidas
+    """
     
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_condominios
     task_landing_read_data_from_external>>task_raw_read_data_from_landing_moradores
