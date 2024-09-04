@@ -29,8 +29,6 @@ def start_up(folder_origin, subfolder):
     global latest_file
     latest_file = max(list_of_files, key=os.path.getctime)
     
-    print(latest_file)
-    
     global document_fingerprint
     document_fingerprint = re.findall("\d+", latest_file)[0]
 

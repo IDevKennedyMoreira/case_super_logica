@@ -18,7 +18,6 @@ def start_up():
     
     global spark
     spark = SparkSession.builder.appName("case_super_logica").getOrCreate()
-    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
 """
 Definindo os schemas de leitura dos dataframes de entrada da camada raw.
@@ -58,22 +57,26 @@ def reading_dataframes(schema_townhouse, schema_property, schema_residents, sche
                    .schema(schema_townhouse)                   \
                    .option("recursiveFileLookup","true")       \
                    .parquet("../datalake/raw/dim_condominios")
-
+    df_townhouse.show()
+    
     df_property =  spark.read.option("header","true")      \
                    .schema(schema_property)                \
                    .option("recursiveFileLookup","true")   \
                    .parquet("../datalake/raw/dim_imoveis")
+    df_property.show()
     
     df_transacoes =  spark.read.option("header","true")       \
                    .schema(schema_transactions)               \
                    .option("recursiveFileLookup","true")      \
                    .parquet("../datalake/raw/fat_transacoes")
+    df_transacoes.show()
                    
     df_residents =  spark.read.option("header","true")        \
                    .schema(schema_residents)                  \
                    .option("recursiveFileLookup","true")      \
                    .parquet("../datalake/raw/dim_moradores")
-                   
+    df_residents.show()
+
     return df_townhouse, df_property, df_transacoes, df_residents
 
 def renaming_columns(df_property):
@@ -96,6 +99,8 @@ def generate_obt(df_transacoes, df_property, df_residents, df_townhouse):
                      "p.imovel_tipo",
                      "p.condominio_id",
                      "p.imovel_valor")
+  
+    
     
     df_obt = df_obt.alias("o")                                                                    \
              .join(df_residents.alias("r"), df_obt.morador_id == df_residents.morador_id,"inner") \
@@ -124,11 +129,12 @@ def generate_obt(df_transacoes, df_property, df_residents, df_townhouse):
                      "o.data_registro",
                      "t.condominio_nome",
                      "t.condominio_endereco")
-    
     return df_obt
 
 def upsert_parquet_file(df_obt):
     df_obt_bkp = df_obt
+    
+    
     try:
         schema_old_obt = StructType()                          \
                         .add("transacao_id", StringType())     \
@@ -152,6 +158,7 @@ def upsert_parquet_file(df_obt):
         df_obt = df_obt.join(old_obt, on=['transacao_id'],how="left_anti")
     
         df_obt.coalesce(1).write.format("parquet").mode("append").save("../datalake/refined")
+        
     
     except Exception as error: 
         
