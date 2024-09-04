@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
+import threading
 
 """ 
                                 🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
@@ -16,42 +17,69 @@ em  infra serverless em diversos clusters porém é necessário analisar  quest�
 de recursos (recomendo o uso de um  serviço de mensageria como kafka para uma estratégia de escala horizontal).
 """
 
-"""
-Inicializa variáveis que serão utilizadas por todo o fluxo
-"""
-def start_up():
-        
-    global spark
-    spark = SparkSession.builder.appName("streaming_raw_data").getOrCreate()
-    
-    global schema_townhouse, schema_property, schema_residents, schema_transactions
-    schema_townhouse = StructType().add("condominio_id", "string").add("condominio_nome", "string").add("condominio_endereco", "string")
-  
-    global input_path_townhouse
-    input_path_townhouse = "./datalake/landing/dim_condominios"
 
-"""
-Inicia streaming de dados.
-"""   
 def work_streaming_townhouse():
-    
-    inputDF = spark.readStream.format("csv").schema(schema_townhouse).format("csv").option("maxFilesPerTrigger", 10).option("header","true").csv(input_path_townhouse)
-    
-    transformedDF = inputDF
-    
-    query = transformedDF.writeStream.outputMode("append").format("parquet").option("checkpointLocation", "./datalake/raw/dim_condominios/_checkpoint").start("./datalake/raw/dim_condominios")
-    
+    spark = SparkSession.builder.appName("streaming_surlogica_data_1").getOrCreate()
+    input_path_townhouse = "./datalake/landing/dim_condominios"
+    schema_townhouse = StructType().add("condominio_id", "string").add("condominio_nome", "string").add("condominio_endereco", "string")
+    inputDF = spark.readStream\
+                    .format("csv")\
+                    .schema(schema_townhouse)\
+                    .option("maxFilesPerTrigger", 10)\
+                    .option("header","true")\
+                    .csv(input_path_townhouse)
+    query = inputDF.writeStream.outputMode("append").format("parquet").option("checkpointLocation", "./datalake_for_stream/raw/dim_condominios").start("./datalake_for_stream/raw/dim_condominios")
     query.awaitTermination()
+    
+def work_streaming_property():
+    spark = SparkSession.builder.appName("streaming_surlogica_data").getOrCreate()
+    schema_property = StructType().add("imovel_id", "string").add("tipo", "string").add("condominio_id", "string").add("valor", "string")
+    input_path_property = "./datalake/landing/dim_imoveis"
+    inputDF = spark.readStream\
+                    .format("csv")\
+                    .schema(schema_property)\
+                    .option("maxFilesPerTrigger", 10)\
+                    .option("header","true")\
+                    .csv(input_path_property)
+    query = inputDF.writeStream.outputMode("append").format("parquet").option("checkpointLocation", "./datalake_for_stream/raw/dim_imoveis").start("./datalake_for_stream/raw/dim_imoveis")
+    query.awaitTermination()
+    
+def work_streaming_resident():
+    spark = SparkSession.builder.appName("streaming_surlogica_data").getOrCreate()
+    schema_property = StructType().add("morador_id", "string").add("morador_nome", "string").add("condominio_id", "string").add("data_registro", "string")
+    input_path_property = "./datalake/landing/dim_moradores"
+    inputDF = spark.readStream\
+                    .format("csv")\
+                    .schema(schema_property)\
+                    .option("maxFilesPerTrigger", 10)\
+                    .option("header","true")\
+                    .csv(input_path_property)
+    query = inputDF.writeStream.outputMode("append").format("parquet").option("checkpointLocation", "./datalake_for_stream/raw/dim_moradores").start("./datalake_for_stream/raw/dim_moradores")
+    query.awaitTermination()
+    
+def work_streaming_transaction():
+    spark = SparkSession.builder.appName("streaming_surlogica_data").getOrCreate()
+    schema_property = StructType().add("transacao_id", "string").add("transacao_valor", "string").add("morador_id", "string").add("data_transacao", "string")
+    input_path_property = "./datalake/landing/fat_transacoes"
+    inputDF = spark.readStream\
+                    .format("csv")\
+                    .schema(schema_property)\
+                    .option("maxFilesPerTrigger", 10)\
+                    .option("header","true")\
+                    .csv(input_path_property)
+    query = inputDF.writeStream.outputMode("append").format("parquet").option("checkpointLocation", "./datalake_for_stream/raw/fat_transacoes").start("./datalake_for_stream/raw/fat_transacoes")
+    query.awaitTermination()
+    
+streaming_condominios = threading.Thread(name='child_tread_townhouse', target=work_streaming_townhouse)
+streaming_condominios.start()
 
-"""
-Orquestração do script de ingestão.
-"""
-def main():
+streaming_property = threading.Thread(name='child_tread_property', target=work_streaming_property)
+streaming_property.start()
+
+streaming_resident = threading.Thread(name='childs_tread_resident', target=work_streaming_resident)
+streaming_resident.start()
+
+streaming_transaction = threading.Thread(name='childs_tread_transaction', target=work_streaming_transaction)
+streaming_transaction.start()
     
-    start_up()
     
-    work_streaming_townhouse()
-    
-    
-if __name__=='__main__':
-    main()

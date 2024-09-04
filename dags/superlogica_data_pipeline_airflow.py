@@ -5,6 +5,7 @@ from landing_read_data_from_external import main as landing_read_data_from_exter
 from raw_read_data_from_landing import main as raw_read_data_from_landing
 from refined_read_data_from_raw import main as refined_read_data_from_raw
 from trusted_read_data_from_refined import main as trusted_read_data_from_refined
+from report_read_data_from_trusted import main as report_read_data_from_trusted
 import os
 
 """
@@ -38,6 +39,9 @@ with DAG(
     
     def run_trusted_read_data_from_refined():
         trusted_read_data_from_refined()
+    
+    def run_report_read_data_from_trusted():
+        report_read_data_from_trusted()
 
     t1 = PythonOperator(
         task_id = "landing_read_data_from_external",
@@ -74,11 +78,16 @@ with DAG(
         python_callable = run_trusted_read_data_from_refined
     )
     
+    t5 = PythonOperator(
+        task_id = "report_read_data_from_trusted",
+        python_callable = run_report_read_data_from_trusted
+    )
+    
     """
     Orquestração das tasks acima definidas.
     """
-    t1>>t2_1>>t3>>t4
-    t1>>t2_2>>t3>>t4
-    t1>>t2_3>>t3>>t4
-    t1>>t2_4>>t3>>t4
+    t1>>t2_1>>t3>>t4>>t5
+    t1>>t2_2>>t3>>t4>>t5
+    t1>>t2_3>>t3>>t4>>t5
+    t1>>t2_4>>t3>>t4>>t5
     
