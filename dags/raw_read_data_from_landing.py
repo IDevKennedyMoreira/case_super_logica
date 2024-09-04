@@ -44,7 +44,7 @@ def work():
     df.write.parquet(f"{folder_destiny}/{subfolder_destiny}/{document_fingerprint}.parquet","overwrite")
 
 """
-    Orquestração do script de ingestão
+    Orquestração do script de ingestão.
 """
 def main(folder_origin, subfolder):
     

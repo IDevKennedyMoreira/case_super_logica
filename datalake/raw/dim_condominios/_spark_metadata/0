@@ -1,3 +1,0 @@
-v1
-{"path":"file:///Users/kennedyjunior/Desktop/case_super_logica/datalake/raw/dim_condominios/part-00000-f1a3a11f-adc8-4bfe-b379-bedd3596df80-c000.snappy.parquet","size":1563,"isDir":false,"modificationTime":1725327612596,"blockReplication":1,"blockSize":33554432,"action":"add"}
-{"path":"file:///Users/kennedyjunior/Desktop/case_super_logica/datalake/raw/dim_condominios/part-00001-14c548a9-13dc-49de-bfb1-a7f7bada4c83-c000.snappy.parquet","size":1539,"isDir":false,"modificationTime":1725327612596,"blockReplication":1,"blockSize":33554432,"action":"add"}

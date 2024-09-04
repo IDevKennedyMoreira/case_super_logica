@@ -1,3 +1,4 @@
+from deltalake.writer import write_deltalake
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StringType, TimestampType, IntegerType
 
@@ -18,8 +19,11 @@ def start_up():
     
     global spark
     spark = SparkSession.builder.appName("case_super_logica").getOrCreate()
+    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
-
+"""
+Definindo os schemas de leitura dos dataframes de entrada da camada raw.
+"""
 def defining_schemas():
 
     schema_townhouse = StructType()                              \
@@ -106,11 +110,54 @@ def generate_obt(df_transacoes, df_property, df_residents, df_townhouse):
                      "o.data_transacao",
                      "r.morador_nome",
                      "r.data_registro")
+             
+    df_obt = df_obt.alias("o")                                                                         \
+             .join(df_townhouse.alias("t"), df_obt.condominio_id == df_townhouse.condominio_id,"inner")\
+             .select("o.transacao_id",
+                     "o.morador_id",
+                     "o.transacao_valor",
+                     "o.imovel_id",
+                     "o.imovel_tipo",
+                     "o.condominio_id",
+                     "o.imovel_valor",
+                     "o.data_transacao",
+                     "o.morador_nome",
+                     "o.data_registro",
+                     "t.condominio_nome",
+                     "t.condominio_endereco")
     
-    df_obt.show()
+    return df_obt
 
-    df_obt.show()
+def upsert_parquet_file(df_obt):
+    df_obt_bkp = df_obt
+    try:
+        schema_old_obt = StructType()                          \
+                        .add("transacao_id", StringType())     \
+                        .add("morador_id", StringType())       \
+                        .add("transacao_valor", IntegerType()) \
+                        .add("imovel_id",StringType())         \
+                        .add("imovel_tipo",StringType())       \
+                        .add("condominio_id",StringType())     \
+                        .add("imovel_valor",IntegerType())     \
+                        .add("data_transacao",TimestampType()) \
+                        .add("morador_nome",StringType())      \
+                        .add("data_registro",TimestampType())  \
+                        .add("condominio_nome",StringType())   \
+                        .add("condominio_endereco",StringType())
 
+        old_obt = spark.read.option("header","true")          \
+                  .schema(schema_old_obt)                     \
+                  .option("recursiveFileLookup","true")       \
+                  .parquet("../datalake/refined")
+  
+        df_obt = df_obt.join(old_obt, on=['transacao_id'],how="left_anti")
+    
+        df_obt.coalesce(1).write.format("parquet").mode("append").save("../datalake/refined")
+    
+    except Exception as error: 
+        
+        df_obt_bkp.coalesce(1).write.format("parquet").mode("overwrite").save("../datalake/refined")
+        
 
 def main():
     
@@ -122,7 +169,10 @@ def main():
     
     df_property = renaming_columns(df_property)
     
-    generate_obt(df_transacoes, df_property, df_residents, df_townhouse)
+    df_obt = generate_obt(df_transacoes, df_property, df_residents, df_townhouse)
+    
+    upsert_parquet_file(df_obt)
+    
     
 if __name__== "__main__":
     main()    

@@ -4,11 +4,11 @@ from raw_read_data_from_landing import main as raw_read_data_from_landing
 """
                                 🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
 Documentação:
-A existência desse arquivo se deve ao fato de que não consigo fazer orquestrações em paralelo 
-no airflow pois estou rodando toda a solução na minha máquina local, como nesse modo de execução
-não consigo alterar o parametro execute no arquivo de configuração do airflow (ao menos que 
-instale o banco localmente), disponibilizei esse arquivo para execução local da pipeline de dados
-porém para demonstração a pipeline também estará visível no airflow com nome de superlogica_data_pipeline
+A   existência desse   arquivo se  deve  ao  fato  de   que  não consigo  fazer   orquestrações em paralelo
+no  airflow pois estou rodando toda  a   solução  na   minha máquina  local, como   nesse  modo de execução
+não    consigo alterar   o parâmetro  execute   no   arquivo   de configuração  do airflow    (ao menos que
+instale  o banco localmente), disponibilizei  esse   arquivo  para  execução  local da    pipeline de dados
+porém para demonstração a pipeline também estará visível no airflow com nome de superlogica_data_pipeline.
 """
 
 """
