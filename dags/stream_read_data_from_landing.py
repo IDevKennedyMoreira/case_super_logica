@@ -13,8 +13,7 @@ anteriormente,   é   um ponto de  partida.   Para    aumento    de  escabilidad
 um     maior número  de works a  partir    do  método    config de   Spark Session     e   também mais memória
 RAM  para processamento,  já numa  estratégia  de  escala   horizontal é possível  executar  esse mesmo script
 em  infra serverless em diversos clusters porém é necessário analisar  questões de  duplicicade e concorrência
-de recursos (recomendo o uso de um  serviço de mensageria como kafka para uma estratégia de escala horizontal)
-respondendo                  a                         questão                 do                   enunciado.
+de recursos (recomendo o uso de um  serviço de mensageria como kafka para uma estratégia de escala horizontal).
 """
 
 """

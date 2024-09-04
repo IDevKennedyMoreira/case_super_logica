@@ -1,4 +1,3 @@
-from deltalake.writer import write_deltalake
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StringType, TimestampType, IntegerType
 
