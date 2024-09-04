@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StringType, TimestampType, IntegerType
 from pyspark.sql.functions import sum
+
 def start_up():
     
     global spark
@@ -28,7 +29,7 @@ def start_up():
                    .option("recursiveFileLookup","true")       \
                    .parquet("../datalake/trusted")
     
-    df_trusted.show()
+def work():
     
     df_agg_sum_transactions_by_townhouse = df_trusted.groupBy(["condominio_id","condominio_nome"]).agg(sum("transacao_valor"))
     df_agg_sum_transactions_by_townhouse.write.format("parquet").mode("overwrite").save("../reports/transactions_by_townhouse")
@@ -38,5 +39,16 @@ def start_up():
     
     df_agg_transaction_by_type = df_trusted.groupBy(["imovel_tipo", "data_transacao" ]).agg(sum("transacao_valor"))
     df_agg_transaction_by_type.write.format("parquet").mode("overwrite").save("../reports/transaction_date_by_property_type")
+
+
+def main():
     
-start_up()
+    start_up()
+    
+    work()
+
+if __name__="__main__":
+    
+    main()
+
+    
