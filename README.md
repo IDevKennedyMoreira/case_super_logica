@@ -5,7 +5,7 @@
 
 # CondoManage
 
-Manual de intruções de como instalar o projeto em máquina local
+Manual de intruções de como instalar o projeto em máquina local e resolução das questões do case.
 
 
 
@@ -16,14 +16,16 @@ Manual de intruções de como instalar o projeto em máquina local
 
 
 ## 🔗 Links
-[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/IDevKennedyMoreira/case_super_logica)
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](www.linkedin.com/in/kennedy-moreira-rocha-júnior-3b3700128/)
+[![Project Repository](https://img.shields.io/badge/project_repository-006?&logo=github&style=for-the-badge&logoColor=white)](https://github.com/IDevKennedyMoreira/case_super_logica)
 
+[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/IDevKennedyMoreira/case_super_logica)
+
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](www.linkedin.com/in/kennedy-moreira-rocha-júnior-3b3700128/)
 
 
 ## Local Deployment
 
-Para deploy deste projeto em máquina local é necessário efetuar algumas ressalvas, este projeto foi desenvolvido em sistema operacional MacOs e os passos de instalação podem mudar de acordo com sistema operacional, aqui basearei apenas a instalação em MacOs pois não possuo muita familiaridade com outros sistemas operacionais e não saberia como descrever o passo a passo nesse momento.
+Para deploy deste projeto em máquina local é necessário efetuar algumas ressalvas, este projeto foi desenvolvido em sistema operacional MacOs e os passos de instalação podem mudar de acordo com sistema operacional, aqui basearei apenas a instalação em MacOs pois não possuo muita familiaridade com outros sistemas operacionais e não saberia como descrever o passo a passo nesse momento pois n tenho acesso facilitado a outros sistemas operacionais.
 
 Instalando o Java versão 11.
 
@@ -71,27 +73,30 @@ Definir variável de ambiente do airflow.
 
 Para executar o projeto em modo local sem airflow via terminal.
 
-```bash
-   cd dags;python3 superlogica_data_pipeline_local.py
-```
-
-   OBS! O motivo de rodar a partir da pasta de dags é que no início do projeto
-   não pensei que teria problemas em rodar a pipe com o airflow com scripts de
-   execução paralela em modo local, porém após consultar a documentação vi essa restrição
-   mas o projeto já estava todo montado a partir desse ponto de montagem.
-
 Para executar o projeto em modo local usando o airflow
 ```bash
    airflow standalone 
 ```
    
-   logue com usuário admin e senha presente no arquivo
-   standalone_admin_password
+Acesse http://localhost:8080
+logue com usuário admin e senha presente no arquivo
+standalone_admin_password e acione a DAG superlogica_data_pipeline
 
-   OBS! Você não conseguirá rodar scripts em paralelo como o presente em nossa DAG
-   sem instalar um banco de dados local e alterar o airflow.cgf para sua configuração
-   de banco escolhida. Devido a esse trabalho recomendo fortemente o uso da execução via
-   terminal presente no passo anterior.
+Para execução da pipeline streaming saia do Airflow e execute o arquivo dags/stream_read_data_from_landing.py. Em outro terminal
+execute
+
+```bash
+   cd dags 
+```
+
+E para criação de novos arquivos na camada de landing execute
+
+```bash
+   python3 landing_read_data_from_external.py 
+```
+
+
+
 ## Questão 1
 
 A arquitetura de datalake escolhida para a criação dessa projeto foi a medalhão
@@ -115,6 +120,8 @@ a explicação de como cada arquivo funciona está em seus comentários internos
 
 ## Questão 3
 
+A resolução dessa questão está presente em dags/report_read_data_from_trusted.py
+
 ## Questão 4
 
 Vide comentários internos do arquivo dags/raw_streaming_read_data_from_landing_townhouse.py
@@ -131,6 +138,8 @@ efetuando pooling em arquivos de dados e logs presentes na ferramenta de orquest
 Para enriquecimento dos logs poderiamos criar uma classe de log com um decorator de logging onde este por sua vez persistiria a mensagem em arquivos de logs de cada job e também colocaria o ELK stack para enxergar estes mesmos logs criando assim uma solução de monitoramento robusta.
 
 ![image](https://miro.medium.com/v2/resize:fit:1358/1*-JZ54LFogtjo8l-zB-DfEA.png)
+
+Para a arquitetura citada acima a presença de uma instância de Kafka entre o Beats e o Logstash pode sanar possíveis gargalos de processamento.
 
 
 
