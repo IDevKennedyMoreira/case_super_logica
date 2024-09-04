@@ -5,13 +5,14 @@ from pyspark.sql.types import StructType, StringType, TimestampType, IntegerType
 """
                                 🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
 Documentação:
-Ao executar este script ele lerá todos os arquivos parquet dentro da da pasta raw e gerará
-o dataframe de OBT (One Big Table) que é a forma de modalegem mais simples que escolhi para
-a execução desse projeto devido ao tempo de entrega.
+Ao   executar este  script ele lerá  todos   os  arquivos   parquet dentro  da da   pasta  raw e gerará
+o  dataframe de  OBT (One Big Table),   que é  a   forma de  modalegem mais   simples  que escolhi para
+a execução desse projeto devido ao tempo de entrega,  e também salvará a dataframe resultante na camada
+refined.
 """
 
 """
-    Inicializa variáveis que serão utilizadas por todo o fluxo.
+Inicializa variáveis que serão utilizadas por todo o fluxo.
 """
 def start_up():
     

@@ -7,11 +7,11 @@ import re
                                 🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
 Documentação:
 Ao executar este script ele lerá o ultimo csv gerado na camada landing e os converterá para 
-o formato parquet e o salvará na camada raw do datalake 
+o formato parquet e o salvará na camada raw do datalake.
 """
 
 """
-    Inicializa variáveis que serão utilizadas por todo o fluxo
+Inicializa variáveis que serão utilizadas por todo o fluxo.
 """
 def start_up(folder_origin, subfolder):
     
@@ -21,7 +21,7 @@ def start_up(folder_origin, subfolder):
     global subfolder_destiny
     subfolder_destiny = subfolder
 
-    list_of_files = glob.glob(f'{folder_origin}/*')
+    list_of_files = glob.glob(f'{folder_origin}/{subfolder}/*')
     
     global folder_destiny
     folder_destiny = folder_origin.replace('landing','raw')
@@ -35,7 +35,7 @@ def start_up(folder_origin, subfolder):
     document_fingerprint = re.findall("\d+", latest_file)[0]
 
 """
-Lê arquivo em formato csv e o salva como parquet na camada raw
+Lê arquivo em formato csv e o salva como parquet na camada raw.
 """
 def work():
     

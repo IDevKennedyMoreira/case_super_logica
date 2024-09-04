@@ -13,12 +13,14 @@ class DataGenerator:
     """
     Método construtor para a criação de dados para testes
     """
-    def __init__(self, file_folder_destination):
+    def __init__(self, file_folder_destination, number_records):
         self._sufix = datetime.now().strftime('%m%d%Y%H%M%S')
         self._file_folder_destination = file_folder_destination
+        self._number_records = number_records
         
     """
-    Gera nomes de pessoas aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    Gera nomes de pessoas aleatórios a partir dos arquivos presentes na pasta de matéria prima 
+    de dados (rawmaterial)
     """    
     def _generate_person_name(self, number_records):
         first_names = []
@@ -33,7 +35,8 @@ class DataGenerator:
         return persons_names
     
     """
-    Gera endereços aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    Gera endereços aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados 
+    (rawmaterial)
     """    
     def _generate_address(self, number_records):
         public_places = []
@@ -51,7 +54,8 @@ class DataGenerator:
         return addresses
     
     """
-    Gera nomes de condominios aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    Gera nomes de condominios aleatórios a partir dos arquivos presentes na pasta de matéria prima de 
+    dados (rawmaterial)
     """  
     def _get_random_townhouse_names(self, number_records):
         townhouse_names = []
@@ -63,7 +67,8 @@ class DataGenerator:
         return townhouses
     
     """
-    Gera tipos de propriedade aleatórios a partir dos arquivos presentes na pasta de matéria prima de dados (rawmaterial)
+    Gera tipos de propriedade aleatórios a partir dos arquivos presentes na pasta de matéria 
+    prima de dados (rawmaterial)
     """ 
     def _get_ramdom_property_type(self, number_records):
         property_types = [] 
@@ -83,15 +88,15 @@ class DataGenerator:
         . Data de cadastro do morador
     """    
     def create_resident_file(self):
-        person_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
-        person_names_list = self._generate_person_name(3)
+        person_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(self._number_records)]
+        person_names_list = self._generate_person_name(self._number_records)
         townhouse_id_list = self.townhouse_id_list[:]
-        registration_date = [ datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y %I:%M %p') for i in range(3)]
+        registration_date = [ datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y %I:%M %p') for i in range(self._number_records)]
         with open(f"../datalake/landing/dim_moradores/moradores{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("morador_id", "morador_nome","condominio_id","data_registro"))
             i = 0
-            while i < 3:
+            while i < self._number_records:
                 writer.writerow((person_id_list[i], person_names_list[i],townhouse_id_list[i],registration_date[i]))
                 i += 1
         #Persistindo dados em objeto na memoria para gerar vinculo entre os arquivos
@@ -107,16 +112,16 @@ class DataGenerator:
         .Valor do imóvel
     """
     def create_property_file(self):
-        property_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
-        property_type_list = self._get_ramdom_property_type(3)
+        property_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(self._number_records)]
+        property_type_list = self._get_ramdom_property_type(self._number_records)
         townhouse_id_list = []
         townhouse_id_list = self.townhouse_id_list[:]
-        property_value_list = [random.randrange(200000, 800000) for i in range(3)]
+        property_value_list = [random.randrange(200000, 800000) for i in range(self._number_records)]
         with open(f"../datalake/landing/dim_imoveis/imoveis{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("imovel_id", "tipo", "condominio_id", "valor"))
             i = 0
-            while i < 3:
+            while i < self._number_records:
                 writer.writerow((property_id_list[i], property_type_list[i],townhouse_id_list[i], property_value_list[i]) )
                 i += 1
         #Persistindo dados em objeto na memoria para gerar vinculo entre os arquivos
@@ -131,16 +136,16 @@ class DataGenerator:
         . Data da transação
     """       
     def create_transaction_file(self):
-        transaction_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
-        transaction_value_list = [random.randrange(100, 5000) for i in range(3)]
+        transaction_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(self._number_records)]
+        transaction_value_list = [random.randrange(100, 5000) for i in range(self._number_records)]
         person_id_list = self.person_id_list[:]
         property_id_list = self.property_id_list[:]
-        transaction_date = [ datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y %I:%M %p') for i in range(3)]
+        transaction_date = [ datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y %I:%M %p') for i in range(self._number_records)]
         with open(f"../datalake/landing/fat_transacoes/transacoes{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("transacao_id", "transacao_valor", "morador_id", "imovel_id","data_transacao"))
             i = 0
-            while i < 3:
+            while i < self._number_records:
                 writer.writerow((transaction_id_list[i], transaction_value_list[i],person_id_list[i], property_id_list[i],transaction_date[i]) )
                 i += 1
         return
@@ -152,14 +157,14 @@ class DataGenerator:
         . Endereco do condominio
     """    
     def create_townhouse_file(self):
-        townhouse_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(3)]
-        townhouse_names_list = self._get_random_townhouse_names(3)
-        townhouse_address_list = self._generate_address(3)
+        townhouse_id_list = [f"{str(uuid.uuid4()).replace('-','')}" for i in range(self._number_records)]
+        townhouse_names_list = self._get_random_townhouse_names(self._number_records)
+        townhouse_address_list = self._generate_address(self._number_records)
         with open(f"../{self._file_folder_destination}/condominios{self._sufix}.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerow(("condominio_id", "condominio_nome","condominio_endereco"))
             i = 0
-            while i < 3:
+            while i < self._number_records:
                 writer.writerow((townhouse_id_list[i], townhouse_names_list[i],townhouse_address_list[i]))
                 i += 1
         #Persistindo dados em objeto na memoria para gerar vinculo entre os arquivos

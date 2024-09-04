@@ -7,9 +7,9 @@ from raw_read_data_from_landing import main as raw_read_data_from_landing
 """
                                 🆂🆄🅿🅴🆁🅻🅾🅶🅸🅲🅰
 Documentação:
-Essa é nossa DAG de execução eo nosso projeto porém como foi feita em computador local
-usando sqlite ela não conseguirá executar os scripts paralelamente gerando gargalos na pipeline
-porém deixarei essa DAG montada para finalidade de consulta do fluxo da pipeline.
+Essa é nossa DAG de execução eo nosso projeto porém como foi feita em computador local  usando 
+sqlite ela não conseguirá executar os scripts paralelamente gerando gargalos na pipeline porém 
+deixarei essa DAG montada para finalidade de consulta do fluxo da pipeline.
 """
 with DAG(
         "superlogica_data_pipeline",
